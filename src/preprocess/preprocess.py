@@ -52,6 +52,7 @@ import numpy as np
 import pandas as pd
 from pyproj import Transformer
 from sklearn.preprocessing import LabelEncoder
+import pickle
 
 
 """"
@@ -510,6 +511,7 @@ def preprocess(path_incident_1,
     message.extend([f" - {col}" for col in non_numeric_cols])
     message.append("")
     message.append("TRAITEMENT - Encodage des colonnes de type 'object'")
+    message.append(f"TRAITEMENT - Sauvegarde des encodeurs dans {path_to_encoders}")
     message.append("")
     logger.info("\n".join(message))
 
@@ -519,6 +521,10 @@ def preprocess(path_incident_1,
         le = LabelEncoder()
         df_modelisation[col] = le.fit_transform(df_modelisation[col])
         label_encoders[col] = le
+
+    # TRAITEMENT - Sauvegarde des encodeurs
+    with open(path_to_encoders, 'wb') as f:
+        pickle.dump(label_encoders, f)
 
     # LOG - Construction du message à logger
     message = ["",
@@ -662,6 +668,7 @@ if __name__ == "__main__":
     path_to_log = '../../logs/preprocess.log'
 
     # sauvegardes
+    path_to_encoders = "../../models/label_encoders.pkl"
     path_to_CSV = "../../data/4_processed_CSV/df_modelisation.csv"
 
     # appel de la fonction preprocess
