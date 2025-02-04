@@ -19,6 +19,6 @@ async def favicon():
 # Point de terminaison pour vérifier que l'API est fonctionnelle #
 #----------------------------------------------------------------#
     
-@app.get('/verify')
+@app.get('/')
 def get_verify():
     return {"message": "L'API est fonctionnelle."}
