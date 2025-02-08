@@ -54,38 +54,38 @@ from pyproj import Transformer
 from sklearn.preprocessing import LabelEncoder
 import pickle
 
+from src.utils.geo_utils import haversine
 
-""""
+
+
+"""
 ---------------------------------------------------------------------------------------------------
-    
-    FONCTION LOCALE : haversine(lat1, lon1, lat2, lon2)
-    
-    Fonction qui implémente la formule d'Haversine pour calculer la distance entre deux points,
-    sur la Terre, le long du grand cercle, à partir de leurs latitudes et leurs longitudes.
-    Le résultat est une distance exprimée en mètres
-
+TRAITEMENT - Définition des chemins vers les fichiers utilisés (à adapter en fonction de l'architecture locale)
 ---------------------------------------------------------------------------------------------------
 """
 
-def haversine(lat1, lon1, lat2, lon2):
+# données d'incidents
+path_incident_1 = "./data/2_CSV/incident_2009_2017.csv"
+path_incident_2 = "./data/2_CSV/incident_2018_2024_07.csv"
 
-    # Radius of Earth in meters
-    R = 6378137.0
-    
-    # Convert degrees to radians
-    lat1, lon1, lat2, lon2 = map(np.radians, [lat1, lon1, lat2, lon2])
-    
-    # Differences in latitudes and longitudes
-    dlat = lat2 - lat1
-    dlon = lon2 - lon1
-    
-    # Haversine formula
-    a = np.sin(dlat / 2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon / 2)**2
-    c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
-    
-    # Distance in meters
-    distance = R * c
-    return distance
+# TEST UNITAIRE - Le fichier incident_2018_2024_07_TEST contient un dataframe avec une colonne en moins
+# TEST UNITAIRE - Décommenter la ligne suivante pour exécuter le test
+# path_incident_2 = "./data/2_CSV/incident_2018_2024_07_TEST.csv"
+
+# données de mobilisations
+path_mobilisation_1 = "./data/2_CSV/mobilisation_2009_2014.csv"
+path_mobilisation_2 = "./data/2_CSV/mobilisation_2015_2020.csv"
+path_mobilisation_3 = "./data/2_CSV/mobilisation_2021_2024.csv"
+
+# données des stations
+path_to_stations="./data/3_external/final_stations_list.csv"
+
+# logs
+path_to_log = './logs/preprocess.log'
+
+# sauvegardes
+path_to_encoders = "./models/label_encoders.pkl"
+path_to_CSV = "./data/4_processed_CSV/df_modelisation.csv"
 
 
 """"
@@ -641,35 +641,6 @@ def preprocess(path_incident_1,
 
 
 if __name__ == "__main__":
-
-    """
-    ---------------------------------------------------------------------------------------------------
-    TRAITEMENT - Définition des chemins vers les fichiers utilisés (à adapter en fonction de l'architecture locale)
-    ---------------------------------------------------------------------------------------------------
-    """
-
-    # données d'incidents
-    path_incident_1 = "../../data/2_CSV/incident_2009_2017.csv"
-    path_incident_2 = "../../data/2_CSV/incident_2018_2024_07.csv"
-
-    # TEST UNITAIRE - Le fichier incident_2018_2024_07_TEST contient un dataframe avec une colonne en moins
-    # TEST UNITAIRE - Décommenter la ligne suivante pour exécuter le test
-    # path_incident_2 = "../../data/2_CSV/incident_2018_2024_07_TEST.csv"
-
-    # données de mobilisations
-    path_mobilisation_1 = "../../data/2_CSV/mobilisation_2009_2014.csv"
-    path_mobilisation_2 = "../../data/2_CSV/mobilisation_2015_2020.csv"
-    path_mobilisation_3 = "../../data/2_CSV/mobilisation_2021_2024.csv"
-
-    # données des stations
-    path_to_stations="../../data/3_external/final_stations_list.csv"
-
-    # logs
-    path_to_log = '../../logs/preprocess.log'
-
-    # sauvegardes
-    path_to_encoders = "../../models/label_encoders.pkl"
-    path_to_CSV = "../../data/4_processed_CSV/df_modelisation.csv"
 
     # appel de la fonction preprocess
     preprocess(path_incident_1, 
