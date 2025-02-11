@@ -179,6 +179,7 @@ xgb_model.fit(X_train, y_train)
 y_pred = xgb_model.predict(X_test)
 
 # TRAITEMENT - Évaluation
+variance_y_test = y_test.var()
 mse_xgb = mean_squared_error(y_test, y_pred)
 r2_xgb = r2_score(y_test, y_pred)
 
@@ -190,9 +191,11 @@ message = ["",
            "",
            f"C'est fait. Temps écoulé depuis le lancement : environ {round(time.time() - start_time)} secondes",
            "",
-           f"Tuned XGBoost MSE: {mse_xgb}",
+           f"Données - Variance des données de test [ Variance(y_test) ] = {variance_y_test}",
            "",
-           f"Tuned XGBoost R^2: {r2_xgb}",
+           f"XGBoost - Moyenne des moindres carrés (MSE) = {mse_xgb}",
+           "",
+           f"XGBoost - R^2 = [ 1 - ( MSE / Variance(y_test) ) ] = {r2_xgb}",
            "",
            "--------------------------------------------------------------------------------------------------------------------------",
            "",
