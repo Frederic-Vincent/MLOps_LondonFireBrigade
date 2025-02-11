@@ -41,13 +41,13 @@ import pickle
 start_time = time.time()
 
 # logs
-path_to_log = '../../logs/model-XGB.log'
+path_to_log = './logs/model-XGB.log'
 
 # données de modélisation
-path_to_CSV = "../../data/4_processed_CSV/df_modelisation.csv"
+path_to_CSV = "./data/4_processed_CSV/df_modelisation.csv"
 
 # sauvegarde du modèle
-path_to_model = "../../models/model-XGB.pkl"
+path_to_model = "./models/model-XGB.pkl"
 
 """"
 ---------------------------------------------------------------------------------------------------
