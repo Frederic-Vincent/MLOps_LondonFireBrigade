@@ -1,4 +1,3 @@
-
 """
 ---------------------------------------------------------------------------------------------------
 Nom du script : model-XGB.py
@@ -8,7 +7,11 @@ Dernière mise à jour : samedi 25 janvier 2025
 Fonction de ce script : création d'un modèle XGB pour la prédiction
 
 Tâches réalisées par ce script :
- - 
+ - Chargement des données
+ - Création des jeux d'entraînement et de test
+ - Entraînement du modèle XGB
+ - Évaluation des performances
+ - Sauvegarde du modèle au format natif XGBoost
 ---------------------------------------------------------------------------------------------------
 """
 
@@ -24,16 +27,12 @@ import logging
 import pandas as pd
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
-from xgboost import XGBRegressor
-import pickle
-
-
-
+import xgboost as xgb
 
 """
 ---------------------------------------------------------------------------------------------------
    TRAITEMENT - Capture du temps de début
-   TRAITEMENT - Définition des chemins vers les fichiers utilisés (à adapter en fonction de l'architecture locale)
+   TRAITEMENT - Définition des chemins vers les fichiers utilisés
 ---------------------------------------------------------------------------------------------------
 """
 
@@ -47,7 +46,7 @@ path_to_log = './logs/model-XGB.log'
 path_to_CSV = "./data/4_processed_CSV/df_modelisation.csv"
 
 # sauvegarde du modèle
-path_to_model = "./models/model-XGB.pkl"
+path_to_model = "./models/model-XGB.json"  # Format natif XGBoost
 
 """"
 ---------------------------------------------------------------------------------------------------
@@ -66,7 +65,7 @@ logging.basicConfig(level=logging.DEBUG,
 # LOG -  Obtenir le logger principal
 logger = logging.getLogger(__name__)
 
-# LOG -  Activer la capture des warnings (cela doit être fait après la configuration de logging)
+# LOG -  Activer la capture des warnings
 logging.captureWarnings(True)
 
 # LOG - Construction du message à logger
@@ -114,7 +113,6 @@ message.append("----------------------------------------------------------------
 message.append("")
 logger.info("\n".join(message))
 
-
 """"
 ---------------------------------------------------------------------------------------------------
     TRAITEMENT - Création des variables X (données) et Y (cible)
@@ -139,6 +137,10 @@ y = df_modelisation['AttendanceTimeSeconds']
 # TRAITEMENT - Création des jeux d'entraînement et de test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# Conversion en DMatrix pour XGBoost
+dtrain = xgb.DMatrix(X_train, label=y_train)
+dtest = xgb.DMatrix(X_test, label=y_test)
+
 # LOG - Construction du message à logger
 message = ["",
            "",
@@ -149,13 +151,12 @@ message = ["",
            ]
 logger.info("\n".join(message))
 
-
 """"
 ---------------------------------------------------------------------------------------------------
     TRAITEMENT - Entraînement du modèle XGB
     TRAITEMENT - Prédictions
     TRAITEMENT - Évaluation
-    TRAITEMENT - Sauvegarde dans un fichier pickle
+    TRAITEMENT - Sauvegarde au format natif XGBoost
 ---------------------------------------------------------------------------------------------------
 """
 
@@ -165,26 +166,46 @@ message = ["",
            "TRAITEMENT - Entraînement du modèle XGB",
            "TRAITEMENT - Prédictions",
            "TRAITEMENT - Évaluation",
-           "TRAITEMENT - Sauvegarde dans un fichier pickle",
+           "TRAITEMENT - Sauvegarde au format natif XGBoost",
            "...",
            ""
            ]
 logger.info("\n".join(message))
 
+# Paramètres du modèle
+params = {
+    'objective': 'reg:squarederror',
+    'eval_metric': 'rmse',
+    'max_depth': 7,
+    'learning_rate': 0.2,
+    'subsample': 0.8,
+    'n_estimators': 200,
+    'seed': 42
+}
+
 # TRAITEMENT - Entraînement du modèle XGB
-xgb_model = XGBRegressor(subsample=0.8, n_estimators=200, max_depth=7, learning_rate=0.2, random_state=42)
-xgb_model.fit(X_train, y_train)
+num_rounds = 200
+evallist = [(dtrain, 'train'), (dtest, 'eval')]
+
+model = xgb.train(
+    params,
+    dtrain,
+    num_rounds,
+    evallist,
+    early_stopping_rounds=10,
+    verbose_eval=10
+)
 
 # TRAITEMENT - Prédictions
-y_pred = xgb_model.predict(X_test)
+y_pred = model.predict(dtest)
 
 # TRAITEMENT - Évaluation
 variance_y_test = y_test.var()
 mse_xgb = mean_squared_error(y_test, y_pred)
 r2_xgb = r2_score(y_test, y_pred)
 
-# TRAITEMENT - Sauvegarde dans un fichier pickle
-pickle.dump(xgb_model, open(path_to_model, 'wb'))
+# TRAITEMENT - Sauvegarde au format natif XGBoost
+model.save_model(path_to_model)
 
 # LOG - Construction du message à logger
 message = ["",
