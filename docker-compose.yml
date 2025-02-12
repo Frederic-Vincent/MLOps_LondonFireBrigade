@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   api:
     build:
@@ -11,4 +9,20 @@ services:
       - ./data:/app/data
       - ./models:/app/models
       - ./src:/app/src
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: src/frontend/Dockerfile
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./src:/app/src
+    environment:
+      - API_URL=http://api:8000  # URL de l'API dans le réseau Docker
+    depends_on:
+      - api
     restart: unless-stopped
