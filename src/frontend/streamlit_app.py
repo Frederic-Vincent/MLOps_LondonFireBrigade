@@ -114,7 +114,7 @@ def show_architecture():
         end
         
         subgraph Data Pipeline
-            K[Data Processing<br>preprocess.py] --> E
+            K[Data Processing & Modeling <br>preprocess.py & model-XGB.py] --> E
             K --> F
             K --> G
         end
@@ -126,18 +126,17 @@ def show_architecture():
             I -.-> F
             J[(logs/)] -.-> |api.log| C
             J -.-> |preprocess.log| K
+            S[(src/)] -.-> |Code source| A
+            S -.-> |Code source| C
+            S -.-> |Code source| K
         end
         
-        style Frontend Container fill:#f9f,stroke:#333,stroke-width:2px
-        style API Container fill:#bbf,stroke:#333,stroke-width:2px
-        style Shared Volumes fill:#bfb,stroke:#333,stroke-width:2px
-        style Data Pipeline fill:#ffb,stroke:#333,stroke-width:2px
     """
     
     # Affichage du diagramme avec st_mermaid
     st_mermaid(mermaid_diagram)
     
-    # Description de l'architecture
+    # Description de l'architecture mise à jour
     st.markdown("""
     #### Description de l'Architecture
     
@@ -156,10 +155,11 @@ def show_architecture():
     
     #### Volumes Partagés
     
-    Les conteneurs partagent trois volumes principaux :
+    Les conteneurs partagent quatre volumes principaux :
     - **/data** : Données des stations
     - **/models** : Modèle XGBoost et encodeurs
     - **/logs** : Fichiers de logs
+    - **/src** : Code source partagé entre les conteneurs
     """)
 
 def show_prediction():
