@@ -1,53 +1,103 @@
-Project Name
-==============================
+# London Fire Brigade Response Time Prediction
 
-This project is a starting Pack for MLOps projects based on the subject "movie_recommandation". It's not perfect so feel free to make some modifications on it.
+Projet de prédiction du temps de réponse des pompiers de Londres utilisant le Machine Learning.
 
-Project Organization
-------------
+## Structure du Projet
 
-    ├── LICENSE
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── logs               <- Logs from training and predicting
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   ├── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │   │   └── visualize.py
-    │   └── config         <- Describe the parameters used in train_model.py and predict_model.py
+```
+.
+├── data/                           # Données du projet
+│   ├── 1_raw/                     # Données brutes
+│   │   ├── Incident data          # Données d'incidents (2009-2024)
+│   │   ├── Mobilisation data      # Données de mobilisation (2009-2024)
+│   │   └── Metadata               # Métadonnées des fichiers
+│   │
+│   ├── 2_CSV/                     # Données converties en CSV
+│   │   ├── incident_*.csv         # Fichiers d'incidents
+│   │   └── mobilisation_*.csv     # Fichiers de mobilisation
+│   │
+│   ├── 3_external/                # Données externes
+│   │   └── final_stations_list.csv    # Liste des casernes
+│   │
+│   └── 4_processed_CSV/           # Données traitées
+│       └── df_modelisation.csv    # Dataset final pour la modélisation
+│
+├── logs/                          # Logs de l'application
+│   ├── api.log                    # Logs de l'API
+│   ├── model-XGB.log             # Logs de l'entraînement
+│   └── preprocess.log            # Logs du preprocessing
+│
+├── models/                        # Modèles et encodeurs
+│   ├── encoders.json             # Encodeurs au format JSON
+│   ├── model-XGB.json            # Modèle XGBoost au format natif
+│   └── *.pkl                     # Anciennes versions (déprécié)
+│
+├── requirements/                  # Dépendances Python
+│   ├── base.txt                  # Dépendances communes
+│   ├── api.txt                   # Dépendances API
+│   └── frontend.txt              # Dépendances Frontend
+│
+├── src/                          # Code source
+│   ├── api/                      # API FastAPI
+│   │   ├── api.py               # Point d'entrée de l'API
+│   │   ├── models.py            # Modèles Pydantic
+│   │   └── Dockerfile           # Configuration Docker
+│   │
+│   ├── frontend/                 # Interface utilisateur
+│   │   ├── streamlit_app.py     # Application Streamlit
+│   │   └── Dockerfile           # Configuration Docker
+│   │
+│   ├── ml/                       # Machine Learning
+│   │   ├── preprocess.py        # Préparation des données
+│   │   ├── model-XGB.py         # Entraînement du modèle
+│   │   └── predict.py           # Prédiction
+│   │
+│   └── utils/                    # Utilitaires
+│       └── geo_utils.py         # Fonctions géographiques
+│
+├── docker-compose.yml            # Configuration des conteneurs
+└── setup.py                      # Configuration du package Python
+```
 
---------
+## Composants Principaux
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+### API (FastAPI)
+- Point d'entrée des prédictions
+- Gestion des requêtes HTTP
+- Logging des prédictions
+
+### Frontend (Streamlit)
+- Interface utilisateur interactive
+- Visualisation des prédictions
+- Affichage cartographique
+
+### Machine Learning
+- Prétraitement des données
+- Entraînement du modèle XGBoost
+- Prédiction des temps d'intervention
+
+## Installation et Démarrage
+
+1. Cloner le repository
+```bash
+git clone [URL_DU_REPO]
+```
+
+2. Copier le template de configuration
+```bash
+cp .env.template .env
+```
+
+3. Lancer les conteneurs
+```bash
+docker-compose up --build
+```
+
+4. Accéder à l'application
+- Frontend : http://localhost:8501
+- API : http://localhost:8000
+
+## Documentation
+- API : http://localhost:8000/docs
+- Modèle : [Lien vers la documentation du modèle]
+- Données : [Lien vers la documentation des données]
