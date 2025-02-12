@@ -1,4 +1,4 @@
-# London Fire Brigade Response Time Prediction
+# Prédiction du temps de réponse des pompiers de Londres
 
 Projet de prédiction du temps de réponse des pompiers de Londres utilisant le Machine Learning.
 
@@ -76,28 +76,3 @@ Projet de prédiction du temps de réponse des pompiers de Londres utilisant le 
 - Entraînement du modèle XGBoost
 - Prédiction des temps d'intervention
 
-## Installation et Démarrage
-
-1. Cloner le repository
-```bash
-git clone [URL_DU_REPO]
-```
-
-2. Copier le template de configuration
-```bash
-cp .env.template .env
-```
-
-3. Lancer les conteneurs
-```bash
-docker-compose up --build
-```
-
-4. Accéder à l'application
-- Frontend : http://localhost:8501
-- API : http://localhost:8000
-
-## Documentation
-- API : http://localhost:8000/docs
-- Modèle : [Lien vers la documentation du modèle]
-- Données : [Lien vers la documentation des données]
