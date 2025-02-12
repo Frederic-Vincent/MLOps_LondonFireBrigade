@@ -8,6 +8,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./models:/app/models
+      - ./logs:/app/logs
       - ./src:/app/src
     restart: unless-stopped
 
@@ -20,6 +21,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./models:/app/models
+      - ./logs:/app/logs
       - ./src:/app/src
     environment:
       - API_URL=http://api:8000  # URL de l'API dans le réseau Docker
