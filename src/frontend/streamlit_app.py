@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import requests
 import folium
@@ -6,15 +7,23 @@ from streamlit_folium import folium_static
 st.title("Prédiction du temps d'intervention des pompiers de Londres")
 
 # Formulaire de saisie
+
 address = st.text_input("Adresse", "Big Ben, London")
 hour = st.number_input("Heure d'appel", min_value=0, max_value=23, value=10)
 incident_group = st.selectbox("Type d'incident", ["Fire", "Special Service", "False Alarm"])
 property_category = st.selectbox("Type de propriété", ["Dwelling", "Other Residential", "Office"])
 
+
 # Bouton de prédiction
+
 if st.button("Prédire le temps d'intervention"):
+   
+   # Récupérer l'URL de l'API depuis les variables d'environnement
+   # avec une valeur par défaut pour le développement local
+   api_url = os.getenv('API_URL', 'http://127.0.0.1:8000')
+   url = f"{api_url}/predict"
+
    # Préparer la requête
-   url = "http://127.0.0.1:8000/predict"
    headers = {"Content-Type": "application/json"}
    data = {
        "address": address,
