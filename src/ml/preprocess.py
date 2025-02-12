@@ -52,7 +52,7 @@ import numpy as np
 import pandas as pd
 from pyproj import Transformer
 from sklearn.preprocessing import LabelEncoder
-import pickle
+import json
 
 from src.utils.geo_utils import haversine
 
@@ -84,7 +84,7 @@ path_to_stations="./data/3_external/final_stations_list.csv"
 path_to_log = './logs/preprocess.log'
 
 # sauvegardes
-path_to_encoders = "./models/label_encoders.pkl"
+path_to_encoders = "./models/label_encoders.json"
 path_to_CSV = "./data/4_processed_CSV/df_modelisation.csv"
 
 
@@ -129,6 +129,7 @@ def preprocess(path_incident_1,
                path_mobilisation_3,
                path_to_stations,
                path_to_log,
+               path_to_encoders,
                path_to_CSV
                ):
     
@@ -522,9 +523,15 @@ def preprocess(path_incident_1,
         df_modelisation[col] = le.fit_transform(df_modelisation[col])
         label_encoders[col] = le
 
-    # TRAITEMENT - Sauvegarde des encodeurs
-    with open(path_to_encoders, 'wb') as f:
-        pickle.dump(label_encoders, f)
+    # TRAITEMENT - Préparation du dictionnaire des encodeurs au format JSON
+    encoders_dict = {}
+    for col, le in label_encoders.items():
+        encoders_dict[col] = le.classes_.tolist()
+
+    # TRAITEMENT - Sauvegarde des encodeurs en JSON
+    path_to_encoders = "./models/encoders.json"
+    with open(path_to_encoders, 'w') as f:
+        json.dump(encoders_dict, f)
 
     # LOG - Construction du message à logger
     message = ["",
@@ -650,5 +657,6 @@ if __name__ == "__main__":
                path_mobilisation_3,
                path_to_stations,
                path_to_log,
+               path_to_encoders,
                path_to_CSV
                )
